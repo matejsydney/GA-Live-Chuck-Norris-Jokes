@@ -1,20 +1,4 @@
-#WHERE ARE YO ?
-#  -*- coding:utf8 -*-
-# !/usr/bin/env python
 # Copyright 2017 Google Inc. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 
 from __future__ import print_function
 from future.standard_library import install_aliases
@@ -30,6 +14,27 @@ import os
 from flask import Flask
 from flask import request
 from flask import make_response
+
+# StART HERE
+
+# START OF MY OWN JOKE FILE IMPORTER
+import random
+#importing list must by a .py file
+from jokeList import jokeDict
+
+
+# START OF MY OWN JOKE CODE
+#picking random starts with first number and ends with the last one- converted to string
+
+#for testing adding variation to 2 instead of 385
+randomJoke = str(random.randint(1,4))
+
+jokeReturn = (jokeDict[randomJoke])
+
+# END HERE
+
+
+
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -52,18 +57,39 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
+    if req.get("result").get("action")=="yahooWeatherForecast":
+        baseurl = "https://query.yahooapis.com/v1/public/yql?"
+        yql_query = makeYqlQuery(req)
+        if yql_query is None:
+            return {}
+        yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+        result = urlopen(yql_url).read()
+        data = json.loads(result)
+        res = makeWebhookResult(data)
+    elif req.get("result").get("action")=="getjoke":
+        baseurl = "http://api.icndb.com/jokes/random"
+        result = urlopen(baseurl).read()
+        data = json.loads(result)
+        res = makeWebhookResultForGetJoke(data)
+    else:
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
-        return {}
-    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    result = urlopen(yql_url).read()
-    data = json.loads(result)
-    res = makeWebhookResult(data)
+
     return res
 
+
+def makeWebhookResultForGetJoke(data):
+#    valueString = data.get('value')
+#    joke = valueString.get('joke') - removing this part
+    joke = (jokeDict[str(random.randint(1,40))])
+    speechText = "<speak>" + joke + '<break time="2s"/>' + " Would you like another joke?" + "</speak>"
+    displayText = joke + " Would you like another joke?"
+    return {
+        "speech": speechText,
+        "displayText": displayText,
+        # "data": data,
+        # "contextOut": [],
+        "source": "webhook from Heroku"
+    }
 
 def makeYqlQuery(req):
     result = req.get("result")
@@ -72,7 +98,7 @@ def makeYqlQuery(req):
     if city is None:
         return None
 
-    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "') and u='c'"
 
 
 def makeWebhookResult(data):
@@ -100,8 +126,8 @@ def makeWebhookResult(data):
 
     # print(json.dumps(item, indent=4))
 
-    speech = "Today the weather in " + location.get('city') + ": " + condition.get('text') + \
-             ", And the temperature is " + condition.get('temp') + " " + units.get('temperature')
+    speech = "Todays C2 weather in " + location.get('city') + ": " + condition.get('text') + \
+             ", And the temperature feels " + condition.get('temp') + " " + units.get('temperature')
 
     print("Response:")
     print(speech)
