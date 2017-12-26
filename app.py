@@ -88,7 +88,7 @@ def makeWebhookResultForGetJoke(data):
         "displayText": displayText,
         # "data": data,
         # "contextOut": [],
-        "source": "webhook from Heroku"
+        "source": "Heroku live webhook"
     }
 
 def makeYqlQuery(req):
