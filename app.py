@@ -1,5 +1,3 @@
-# Copyright 2017 Google Inc. All Rights Reserved.
-#v4.1
 
 from __future__ import print_function
 from future.standard_library import install_aliases
@@ -80,7 +78,7 @@ def makeWebhookResultForGetJoke():
         "displayText": displayText,
         # "data": data,
         # "contextOut": [],
-        "source": "Heroku live webhook"
+        "source": "Heroku live webhook v 4.2"
     }
 '''
 def makeYqlQuery(req):
