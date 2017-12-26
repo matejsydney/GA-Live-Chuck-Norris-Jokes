@@ -1,5 +1,5 @@
 # Copyright 2017 Google Inc. All Rights Reserved.
-#v3
+#v4.1
 
 from __future__ import print_function
 from future.standard_library import install_aliases
@@ -16,23 +16,14 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
-# StART HERE
-
-# START OF MY OWN JOKE FILE IMPORTER
+# MY ADDITION - joke list needs to be .py file to work
 import random
-#importing list must by a .py file
 from jokeList import jokeDict
 
-
-# START OF MY OWN JOKE CODE
 #picking random starts with first number and ends with the last one- converted to string
-
-#for testing adding variation to 2 instead of 385
-randomJoke = str(random.randint(1,4))
-
-jokeReturn = (jokeDict[randomJoke])
-
-# END HERE
+#randomJoke = str(random.randint(1,4))
+#jokeReturn = (jokeDict[randomJoke])
+# MY ADDITION THE ABOVE NOT NEEDED
 
 
 
@@ -58,27 +49,27 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action")=="yahooWeatherForecast":
-        baseurl = "https://query.yahooapis.com/v1/public/yql?"
-        yql_query = makeYqlQuery(req)
-        if yql_query is None:
-            return {}
-        yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-        result = urlopen(yql_url).read()
-        data = json.loads(result)
-        res = makeWebhookResult(data)
-    elif req.get("result").get("action")=="getjoke":
-        baseurl = "http://api.icndb.com/jokes/random"
-        result = urlopen(baseurl).read()
-        data = json.loads(result)
-        res = makeWebhookResultForGetJoke(data)
+#    if req.get("result").get("action")=="yahooWeatherForecast":
+#        baseurl = "https://query.yahooapis.com/v1/public/yql?"
+#        yql_query = makeYqlQuery(req)
+#        if yql_query is None:
+#            return {}
+#        yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+#        result = urlopen(yql_url).read()
+#        data = json.loads(result)
+#        res = makeWebhookResult(data)
+    if req.get("result").get("action")=="getjoke":
+#        baseurl = "http://api.icndb.com/jokes/random"
+#        result = urlopen(baseurl).read()
+#        data = json.loads(result)
+        res = makeWebhookResultForGetJoke()
     else:
         return {}
 
     return res
 
 
-def makeWebhookResultForGetJoke(data):
+def makeWebhookResultForGetJoke():
 #    valueString = data.get('value')
 #    joke = valueString.get('joke') - removing this part
     joke = (jokeDict[str(random.randint(1,40))])
@@ -91,7 +82,7 @@ def makeWebhookResultForGetJoke(data):
         # "contextOut": [],
         "source": "Heroku live webhook"
     }
-
+'''
 def makeYqlQuery(req):
     result = req.get("result")
     parameters = result.get("parameters")
@@ -140,7 +131,7 @@ def makeWebhookResult(data):
         # "contextOut": [],
         "source": "apiai-weather-webhook-sample"
     }
-
+'''
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
