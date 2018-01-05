@@ -21,7 +21,7 @@ from jokeList import jokeDict
 #picking random starts with first number and ends with the last one- converted to string
 #randomJoke = str(random.randint(1,4))
 #jokeReturn = (jokeDict[randomJoke])
-# MY ADDITION THE ABOVE NOT NEEDED
+# MY ADDITION THE ABOVE NOT NEEDED  2
 
 
 
@@ -70,7 +70,7 @@ def processRequest(req):
 def makeWebhookResultForGetJoke():
 #    valueString = data.get('value')
 #    joke = valueString.get('joke') - removing this part
-    joke = (jokeDict[str(random.randint(1,40))])
+    joke = (jokeDict[str(random.randint(1,186))])
     speechText = "<speak>" + joke + '<break time="2s"/>' + " Would you like another joke?" + "</speak>"
     displayText = joke + " Would you like another joke?"
     return {
@@ -78,7 +78,7 @@ def makeWebhookResultForGetJoke():
         "displayText": displayText,
         # "data": data,
         # "contextOut": [],
-        "source": "Heroku live webhook v 4.2"
+        "source": "Heroku live webhook v4.3"
     }
 '''
 def makeYqlQuery(req):
